@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ascdy / Management & Advisory</title>
-<meta name="description" content="ascdy. Discord management and advisory. Contact via Discord only.">
+<title>ascdy · Portfolio</title>
+<meta name="description" content="ascdy portfolio. Discord management, advisory, and systems.">
 <meta name="theme-color" content="#0b0d12">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,240 +16,340 @@
   --bg: #0b0d12;
   --card: rgba(15, 17, 23, 0.75);
   --border: rgba(255, 255, 255, 0.09);
-  --text: #e8eaf0;
-  --muted: #8f96a8;
-  --glow: color-mix(in srgb, var(--accent) 40%, transparent);
-  --soft: color-mix(in srgb, var(--accent) 12%, transparent);
-  --line: color-mix(in srgb, var(--accent) 38%, transparent);
+  --text: #eef0f5;
+  --muted: #9aa1b2;
+  --glow: color-mix(in srgb, var(--accent) 45%, transparent);
+  --soft: color-mix(in srgb, var(--accent) 14%, transparent);
+  --line: color-mix(in srgb, var(--accent) 40%, transparent);
   transition: --accent .7s ease;
 }
 * { box-sizing: border-box; margin: 0; }
 html { scroll-behavior: smooth; }
 body {
   min-height: 100vh; background: var(--bg); color: var(--text);
-  font: 400 16px/1.6 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font: 400 16px/1.6 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
   overflow-x: hidden; -webkit-font-smoothing: antialiased;
 }
-body.locked { overflow: hidden; }
 
-/* Background */
+/* Loader Arcade Minigame */
+#loader {
+  position: fixed; inset: 0; z-index: 9999; background: var(--bg);
+  display: grid; place-items: center; padding: 20px;
+  transition: opacity .4s ease, visibility .4s ease;
+}
+#loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-card {
+  width: 100%; max-width: 440px; padding: 26px; text-align: center;
+  background: var(--card); border: 1px solid var(--line); border-radius: 20px;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 40px -10px var(--glow);
+  display: grid; gap: 16px;
+}
+.loader-card h2 { font-size: 1.3rem; font-weight: 800; letter-spacing: -.01em; }
+.loader-card p { color: var(--muted); font-size: .85rem; }
+.arcade-box {
+  position: relative; height: 180px; background: rgba(0,0,0,.45); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; cursor: crosshair; user-select: none;
+}
+.arcade-dot {
+  position: absolute; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 14px var(--accent);
+  cursor: pointer; display: grid; place-items: center; font-size: .7rem; font-weight: 800; color: #0b0d12;
+  transition: transform .08s ease;
+}
+.arcade-dot:active { transform: scale(0.8); }
+.arcade-hud { display: flex; justify-content: space-between; align-items: center; font-size: .85rem; color: var(--muted); padding: 0 4px; }
+.arcade-hud b { color: var(--text); }
+.loader-actions { display: flex; gap: 10px; }
+
 .pane {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background-image:
-    linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
   background-size: 64px 64px;
+  backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
   -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 30%, transparent 85%);
           mask-image: radial-gradient(ellipse at 50% 30%, #000 30%, transparent 85%);
 }
 .orb {
-  position: fixed; z-index: 0; border-radius: 50%; filter: blur(100px); opacity: .32;
+  position: fixed; z-index: 0; border-radius: 50%; filter: blur(90px); opacity: .5;
   background: radial-gradient(circle, var(--accent), transparent 70%);
   will-change: transform; pointer-events: none;
 }
-.orb.o1 { width: 520px; height: 520px; top: -160px; left: -140px; animation: drift1 34s ease-in-out infinite alternate; }
-.orb.o2 { width: 420px; height: 420px; bottom: -140px; right: -120px; animation: drift2 42s ease-in-out infinite alternate; opacity: .24; }
-.orb.o3 { width: 300px; height: 300px; top: 50%; left: 55%; animation: drift3 48s ease-in-out infinite alternate; opacity: .16; }
-@keyframes drift1 { to { transform: translate3d(200px, 140px, 0) scale(1.12); } }
-@keyframes drift2 { to { transform: translate3d(-220px, -120px, 0) scale(.92); } }
-@keyframes drift3 { to { transform: translate3d(-160px, 100px, 0) scale(1.2); } }
+.orb.o1 { width: 520px; height: 520px; top: -140px; left: -120px; animation: drift1 26s ease-in-out infinite alternate; }
+.orb.o2 { width: 420px; height: 420px; bottom: -120px; right: -100px; animation: drift2 32s ease-in-out infinite alternate; opacity: .38; }
 
-main { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 56px 20px 40px; display: grid; gap: 52px; }
+@keyframes drift1 { to { transform: translate3d(220px, 160px, 0) scale(1.15); } }
+@keyframes drift2 { to { transform: translate3d(-260px, -140px, 0) scale(.9); } }
+
+main { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 48px 20px 40px; display: grid; gap: 40px; }
 
 .glass {
   background: var(--card); border: 1px solid var(--border); border-radius: 18px;
   backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 10px 40px rgba(0,0,0,.35);
 }
-svg.i { width: 100%; height: 100%; }
 
-/* Profile */
-.profile { padding: 30px; display: grid; grid-template-columns: auto 1fr; gap: 26px; align-items: center; border-color: var(--line); box-shadow: 0 10px 40px rgba(0,0,0,.35), 0 0 60px -24px var(--glow); transition: border-color .7s, box-shadow .7s; }
-.avatar-wrap { position: relative; width: 124px; height: 124px; }
-.avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #1a1d26; border: 2px solid var(--line); display: grid; place-items: center; font-size: 44px; font-weight: 800; color: var(--accent); transition: border-color .7s, color .7s; }
-.dot { position: absolute; right: 5px; bottom: 5px; width: 24px; height: 24px; border-radius: 50%; border: 4px solid #0f1117; background: #747f8d; transition: background .4s, box-shadow .4s; }
-.dot[data-s="online"] { background: #3ba55d; box-shadow: 0 0 0 4px rgba(59,165,93,.22), 0 0 16px #3ba55d; }
-.dot[data-s="idle"] { background: #faa61a; box-shadow: 0 0 0 4px rgba(250,166,26,.22), 0 0 16px #faa61a; }
-.dot[data-s="dnd"] { background: #ed4245; box-shadow: 0 0 0 4px rgba(237,66,69,.22), 0 0 16px #ed4245; }
-.dot[data-s="online"], .dot[data-s="idle"], .dot[data-s="dnd"] { animation: ring 3s ease-in-out infinite; }
-@keyframes ring { 50% { filter: brightness(1.3); } }
-h1 { font-size: clamp(2.2rem, 5vw, 3.2rem); line-height: 1.05; font-weight: 800; letter-spacing: -.02em; }
-.handle { color: var(--muted); margin-top: 2px; }
-.tag { display: inline-block; margin-top: 12px; padding: 3px 12px; border-radius: 999px; font-size: .86rem; color: var(--accent); background: var(--soft); border: 1px solid var(--line); transition: all .7s; }
-.activity { margin-top: 14px; color: var(--muted); font-size: .94rem; min-height: 1.5em; }
-.activity b { color: var(--text); font-weight: 600; }
-.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-.btn {
-  display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 11px;
-  font: 600 .93rem/1 'Bricolage Grotesque', system-ui, sans-serif; color: var(--text); text-decoration: none; cursor: pointer;
-  background: rgba(255,255,255,.05); border: 1px solid var(--border);
-  transition: transform .2s, box-shadow .3s, border-color .3s;
+.profile { padding: 28px; display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; border-color: var(--line); }
+.avatar-wrap { position: relative; width: 110px; height: 110px; }
+.avatar { 
+  position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 50%; 
+  object-fit: cover; background: #1a1d26; border: 3px solid var(--line); 
+  display: grid; place-items: center; font-size: 40px; font-weight: 800; color: var(--accent); 
 }
-.btn:hover { transform: translateY(-2px); border-color: var(--line); box-shadow: 0 0 22px -4px var(--glow); }
-.btn.primary { background: var(--accent); color: #0b0d12; border-color: transparent; box-shadow: 0 0 24px -6px var(--glow); }
-.btn.primary:hover { box-shadow: 0 0 36px -2px var(--glow); }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.dot { position: absolute; right: 4px; bottom: 4px; width: 22px; height: 22px; border-radius: 50%; border: 3px solid #0f1117; background: #747f8d; transition: background .4s; z-index: 2; }
+.dot[data-s="online"] { background: #3ba55d; box-shadow: 0 0 14px #3ba55d; }
+.dot[data-s="idle"] { background: #faa61a; box-shadow: 0 0 14px #faa61a; }
+.dot[data-s="dnd"] { background: #ed4245; box-shadow: 0 0 14px #ed4245; }
 
-/* Sections */
+h1 { font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1.05; font-weight: 800; letter-spacing: -.02em; }
+.handle { color: var(--muted); margin-top: 2px; font-size: .95rem; }
+.tag { display: inline-block; margin-top: 10px; padding: 3px 10px; border-radius: 999px; font-size: .82rem; color: var(--accent); background: var(--soft); border: 1px solid var(--line); }
+.activity { margin-top: 12px; color: var(--muted); font-size: .9rem; min-height: 1.4em; }
+.activity b { color: var(--text); font-weight: 600; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 10px;
+  font: 600 .9rem/1 inherit; font-family: inherit; color: var(--text); text-decoration: none; cursor: pointer;
+  background: rgba(255,255,255,.05); border: 1px solid var(--border); transition: all .2s;
+}
+.btn:hover { border-color: var(--line); transform: translateY(-1px); }
+.btn.primary { background: var(--accent); color: #0b0d12; border-color: transparent; }
+
+/* Navigation Tabs */
+.nav-tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: -10px; }
+.tab-btn { background: none; border: none; font: inherit; color: var(--muted); cursor: pointer; font-weight: 600; font-size: 1rem; padding: 4px 12px; border-radius: 8px; transition: color .2s, background .2s; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent); background: var(--soft); border: 1px solid var(--line); }
+
+.tab-content { display: none; }
+.tab-content.active { display: grid; gap: 24px; }
+
+.stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.stat-card { padding: 16px 20px; text-align: center; }
+.stat-val { font-size: 1.6rem; font-weight: 800; color: var(--accent); }
+.stat-lbl { color: var(--muted); font-size: .82rem; }
+
 .sec-title { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 16px; }
 .grid { display: grid; gap: 14px; }
-.grid.skills { grid-template-columns: repeat(2, 1fr); }
-.grid.services { grid-template-columns: repeat(3, 1fr); }
-.grid.servers { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
-.card { padding: 20px; transition: border-color .3s, box-shadow .3s, transform .25s; }
-.card:hover { border-color: var(--line); box-shadow: 0 10px 40px rgba(0,0,0,.35), 0 0 30px -12px var(--glow); transform: translateY(-2px); }
-.icon { flex: none; width: 42px; height: 42px; padding: 10px; border-radius: 12px; color: var(--accent); background: var(--soft); border: 1px solid var(--line); transition: all .7s; }
-.card h3 { font-size: 1.05rem; line-height: 1.3; }
-.card p { color: var(--muted); font-size: .93rem; margin-top: 4px; }
-.skill { display: flex; gap: 14px; align-items: flex-start; }
-.svc .icon { margin-bottom: 14px; }
-.server { display: flex; align-items: center; gap: 14px; text-decoration: none; color: inherit; }
-.server small { color: var(--muted); display: block; }
-.server .n { margin-left: auto; text-align: right; font-weight: 600; font-size: .93rem; white-space: nowrap; }
-.server .n small { font-weight: 400; }
-.reach { margin-top: 14px; color: var(--muted); font-size: .93rem; }
-.reach b { color: var(--accent); font-weight: 800; font-size: 1.1rem; transition: color .7s; }
-.empty { color: var(--muted); padding: 20px; }
+.grid.two-col { grid-template-columns: repeat(2, 1fr); }
+.grid.servers { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
 
-/* Footer */
-footer { display: grid; gap: 14px; justify-items: center; text-align: center; }
-.pills { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding: 7px; border-radius: 999px; }
-.pills a { padding: 9px 20px; border-radius: 999px; color: var(--text); text-decoration: none; font-weight: 600; font-size: .92rem; transition: background .3s, color .3s; }
-.pills a:hover { background: var(--soft); color: var(--accent); }
-.fine { color: var(--muted); font-size: .85rem; }
+.card { padding: 20px; transition: border-color .25s, transform .2s; }
+.card:hover { border-color: var(--line); transform: translateY(-2px); }
+.card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 
-/* Cycler + toast */
-.cycler { position: fixed; right: 18px; bottom: 18px; z-index: 5; width: 46px; height: 46px; border-radius: 50%; cursor: pointer; border: 1px solid var(--line); background: var(--card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: grid; place-items: center; box-shadow: 0 0 22px -4px var(--glow); transition: transform .2s; }
-.cycler:hover { transform: scale(1.08); }
-.cycler i { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); }
-.toast { position: fixed; left: 50%; bottom: 28px; z-index: 30; transform: translate(-50%, 24px); opacity: 0; pointer-events: none; padding: 12px 20px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 0 30px -6px var(--glow); transition: opacity .25s, transform .25s; }
+.icon-svg { flex: none; width: 38px; height: 38px; border-radius: 10px; background: var(--soft); border: 1px solid var(--line); display: grid; place-items: center; fill: var(--accent); stroke: var(--accent); }
+.icon-svg svg { width: 18px; height: 18px; }
+
+.card h3 { font-size: 1.05rem; }
+.card p { color: var(--muted); font-size: .9rem; margin-top: 4px; }
+.news-date { font-size: .78rem; color: var(--accent); font-weight: 600; margin-bottom: 6px; display: block; }
+.server { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+.server small { color: var(--muted); }
+
+footer { display: grid; gap: 12px; justify-items: center; text-align: center; margin-top: 10px; }
+.pills { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 6px; border-radius: 999px; }
+.pills a { padding: 8px 16px; border-radius: 999px; color: var(--text); text-decoration: none; font-weight: 600; font-size: .88rem; }
+.fine { color: var(--muted); font-size: .82rem; }
+
+.cycler { position: fixed; right: 18px; bottom: 18px; z-index: 5; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; border: 1px solid var(--line); background: var(--card); backdrop-filter: blur(16px); display: grid; place-items: center; }
+.cycler i { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); }
+.toast { position: fixed; left: 50%; bottom: 24px; z-index: 6; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; padding: 10px 18px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); backdrop-filter: blur(16px); transition: all .2s; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-/* Loading mini-game */
-.loader { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 20px; background: rgba(8,10,14,.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: opacity .4s; }
-.loader.out { opacity: 0; pointer-events: none; }
-.loader-box { width: min(440px, 100%); padding: 22px; display: grid; gap: 14px; }
-.loader-top { display: flex; justify-content: space-between; align-items: baseline; }
-.loader-top h2 { font-size: 1.1rem; }
-.loader-top span { color: var(--muted); font-size: .9rem; }
-.field { position: relative; height: 220px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,.02); overflow: hidden; touch-action: manipulation; }
-.target { position: absolute; width: 38px; height: 38px; padding: 0; border-radius: 50%; border: 2px solid var(--accent); background: var(--soft); color: var(--accent); cursor: pointer; animation: pop .25s ease-out; }
-.target::after { content: ""; position: absolute; inset: 11px; border-radius: 50%; background: var(--accent); }
-@keyframes pop { from { transform: scale(.3); opacity: 0; } }
-.bar { height: 4px; border-radius: 4px; background: rgba(255,255,255,.08); overflow: hidden; }
-.bar i { display: block; height: 100%; width: 0; background: var(--accent); }
-.loader-foot { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: .88rem; }
-
-@media (max-width: 720px) {
-  main { padding-top: 32px; gap: 42px; }
-  .profile { grid-template-columns: 1fr; justify-items: center; text-align: center; padding: 26px 20px; }
-  .actions { justify-content: center; }
-  .grid.skills, .grid.services { grid-template-columns: 1fr; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .orb, .dot, .target { animation: none !important; }
-  * { transition-duration: .01s !important; }
+@media (max-width: 640px) {
+  main { padding-top: 28px; gap: 32px; }
+  .profile { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .grid.two-col, .stats-bar { grid-template-columns: 1fr; }
 }
 </style>
 </head>
-<body class="locked">
+<body>
 
-<div class="pane" aria-hidden="true"></div>
-<div class="orb o1" aria-hidden="true"></div>
-<div class="orb o2" aria-hidden="true"></div>
-<div class="orb o3" aria-hidden="true"></div>
-
-<!-- Loading screen with a small game. Edit the text in LOADER inside the script. -->
-<div class="loader" id="loader" role="dialog" aria-modal="true" aria-label="Loading">
-  <div class="glass loader-box">
-    <div class="loader-top"><h2 id="loadTitle">Loading.</h2><span>Hits: <b id="score">0</b></span></div>
-    <div class="field" id="field"></div>
-    <div class="bar"><i id="barFill"></i></div>
-    <div class="loader-foot"><span id="loadHint">Click the targets while you wait.</span><button class="btn" id="skip" type="button">Skip</button></div>
+<!-- Arcade Loader Overlay -->
+<div id="loader">
+  <div class="loader-card">
+    <div>
+      <h2>ascdy</h2>
+      <p>Hit 5 targets to enter, or skip.</p>
+    </div>
+    <div class="arcade-box" id="arcadeBox">
+      <div class="arcade-dot" id="arcadeTarget">hit</div>
+    </div>
+    <div class="arcade-hud">
+      <span>Score: <b id="arcadeScore">0</b> / 5</span>
+      <span>Time: <b id="arcadeTimer">10</b>s</span>
+    </div>
+    <div class="loader-actions">
+      <button class="btn" id="skipBtn" style="flex: 1; justify-content: center;">Skip</button>
+    </div>
   </div>
 </div>
 
+<div class="pane"></div>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+
 <main>
 
-  <!-- EDIT HERE: Profile. Name, handle, title and Discord ID come from CONFIG in the script. -->
   <header class="glass profile">
     <div class="avatar-wrap">
+      <div class="avatar" id="avatarFallback">A</div>
       <img class="avatar" id="avatar" alt="" hidden>
-      <div class="avatar" id="avatarFallback" aria-hidden="true">A</div>
-      <span class="dot" id="dot" data-s="offline" role="img" aria-label="Status: offline"></span>
+      <span class="dot" id="dot" data-s="offline"></span>
     </div>
     <div>
       <h1 id="name">ascdy</h1>
       <p class="handle" id="handle">@ascdy</p>
-      <span class="tag" id="intro">Management & Advisory</span>
-      <p class="activity" id="activity" aria-live="polite">Checking status…</p>
+      <span class="tag" id="intro">Discord Management & Systems</span>
+      <p class="activity" id="activity">Checking status…</p>
       <div class="actions">
         <a class="btn primary" id="dmBtn" href="#" target="_blank" rel="noopener">DM via Discord Only</a>
-        <button class="btn" id="copyBtn" type="button">Copy Discord tag</button>
+        <button class="btn" id="copyBtn" type="button">Copy tag</button>
       </div>
     </div>
   </header>
 
-  <!-- EDIT HERE: Past skills. Change the icon name (data-icon), title and text. Icons live in ICONS in the script. -->
-  <section aria-labelledby="skillT">
-    <h2 class="sec-title" id="skillT">Past skills</h2>
-    <div class="grid skills">
-      <article class="glass card skill"><div class="icon" data-icon="users"></div><div><h3>Staff oversight</h3><p>Keeping server staff organized and active.</p></div></article>
-      <article class="glass card skill"><div class="icon" data-icon="shield"></div><div><h3>Raids and security</h3><p>Handling raids, security setups, and permissions.</p></div></article>
-      <article class="glass card skill"><div class="icon" data-icon="layout"></div><div><h3>Server organization</h3><p>Channels, roles and rules that make sense to new members.</p></div></article>
-      <article class="glass card skill"><div class="icon" data-icon="pulse"></div><div><h3>Community stability</h3><p>Keeping things calm when a server grows or gets messy.</p></div></article>
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" data-target="tabPortfolio">Portfolio</button>
+    <button class="tab-btn" data-target="tabNews">News / Log</button>
+  </div>
+
+  <!-- TAB 1: PORTFOLIO -->
+  <div class="tab-content active" id="tabPortfolio">
+    <div class="stats-bar">
+      <div class="glass stat-card">
+        <div class="stat-val" id="statServerCount">0</div>
+        <div class="stat-lbl">Managed Servers</div>
+      </div>
+      <div class="glass stat-card">
+        <div class="stat-val" id="statMemberReach">0+</div>
+        <div class="stat-lbl">Members</div>
+      </div>
+      <div class="glass stat-card">
+        <div class="stat-val">Active</div>
+        <div class="stat-lbl">Status</div>
+      </div>
     </div>
-  </section>
 
-  <!-- EDIT HERE: What I do. -->
-  <section aria-labelledby="svcT">
-    <h2 class="sec-title" id="svcT">What I do</h2>
-    <div class="grid services">
-      <article class="glass card svc"><div class="icon" data-icon="chat"></div><h3>Discord management</h3><p>Running the day-to-day. Staff, moderation, and keeping the server active.</p></article>
-      <article class="glass card svc"><div class="icon" data-icon="compass"></div><h3>Advisory</h3><p>Straight feedback on how your server or team is set up and what to change.</p></article>
-      <article class="glass card svc"><div class="icon" data-icon="sliders"></div><h3>Setup & systems</h3><p>Building Discord setups that don't fall apart.</p></article>
-    </div>
-  </section>
+    <section>
+      <h2 class="sec-title">Past Skills</h2>
+      <div class="grid two-col">
+        <article class="glass card">
+          <div class="card-head">
+            <div class="icon-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <h3>Staff oversight</h3>
+          </div>
+          <p>Keeping server staff organized and active.</p>
+        </article>
 
-  <!-- EDIT HERE: Communities. Entries and member counts come from SERVERS_LIST. Total reach is calculated. -->
-  <section aria-labelledby="srvT">
-    <h2 class="sec-title" id="srvT">Managed communities</h2>
-    <div class="grid servers" id="servers"></div>
-    <p class="reach" id="reach" hidden></p>
-  </section>
+        <article class="glass card">
+          <div class="card-head">
+            <div class="icon-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <h3>Raids and security</h3>
+          </div>
+          <p>Handling raids, security setups, and permissions.</p>
+        </article>
 
-  <!-- EDIT HERE: Footer. Links come from CONFIG.links. No email, Discord DM only. -->
+        <article class="glass card">
+          <div class="card-head">
+            <div class="icon-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+            <h3>Server organization</h3>
+          </div>
+          <p>Channels, roles and rules that make sense to new members.</p>
+        </article>
+
+        <article class="glass card">
+          <div class="card-head">
+            <div class="icon-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg></div>
+            <h3>Community stability</h3>
+          </div>
+          <p>Keeping things calm when a server grows or gets messy.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="sec-title">What I do</h2>
+      <div class="grid two-col">
+        <article class="glass card">
+          <div class="card-head">
+            <div class="icon-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <h3>Discord management</h3>
+          </div>
+          <p>Running the day-to-day. Staff, moderation, and keeping the server active.</p>
+        </article>
+
+        <article class="glass card">
+          <div class="card-head">
+            <div class="icon-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+            <h3>Advisory</h3>
+          </div>
+          <p>Straight feedback on how your server or team is set up and what to change.</p>
+        </article>
+
+        <article class="glass card" style="grid-column: span 2;">
+          <div class="card-head">
+            <div class="icon-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+            <h3>Setup & systems</h3>
+          </div>
+          <p>Building Discord setups that don't fall apart.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="sec-title">Communities</h2>
+      <div class="grid servers" id="servers"></div>
+    </section>
+  </div>
+
+  <!-- TAB 2: NEWS / UPDATES (Editable via NEWS_LIST array below) -->
+  <div class="tab-content" id="tabNews">
+    <h2 class="sec-title">Updates & Logs</h2>
+    <p style="color: var(--muted); font-size: .9rem; margin-top: -10px; margin-bottom: 10px;">Recent changes, server milestones, and notes.</p>
+    <div class="grid" id="newsGrid"></div>
+  </div>
+
   <footer>
-    <nav class="glass pills" id="pills" aria-label="External profiles"></nav>
-    <p class="fine">Discord DMs only. No email.</p>
+    <nav class="glass pills" id="pills"></nav>
+    <p class="fine">DM via Discord only.</p>
   </footer>
 
 </main>
 
-<button class="cycler" id="cycler" type="button" aria-label="Change accent color" title="Change accent color"><i></i></button>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<button class="cycler" id="cycler" type="button" aria-label="Change theme color"><i></i></button>
+<div class="toast" id="toast"></div>
 
 <script>
-/* ============================================================
-   EDIT HERE: all site data lives in these objects.
-   ============================================================ */
+/* =========================================================================
+   EDIT HERE: PRIVATE VERSION VS PUBLIC VERSION MANAGEMENT
+   =========================================================================
+   To maintain a secondary private version vs public version:
+   - Keep your main `index.html` repository private or deploy from a separate 
+     branch/private repo if you want absolute secrecy.
+   - For GitHub Pages public hosting, visitors only see what is published.
+   - To post news, simply add entries to the NEWS_LIST array below and push!
+   ========================================================================= */
 
 const CONFIG = {
   displayName: "ascdy",
   handle: "@ascdy",
-  intro: "Management & Advisory",
+  intro: "Discord Management & Systems",
   discordId: "1183794432462573579",
-  discordTag: "ascdy",               // what the Copy button copies
-  fallbackAvatar: "",                // optional image URL if Lanyard has no avatar
-  refreshSeconds: 30,
-  loaderSeconds: 5,                  // how long the loading screen runs
+  discordTag: "ascdy",
+  refreshSeconds: 15,
   palette: [
-    { name: "Electric Orange", hex: "#FF6B00" },
-    { name: "Crimson Red",     hex: "#E5133A" },
-    { name: "Neon Violet",     hex: "#9B5CFF" },
-    { name: "Emerald Green",   hex: "#10C77B" },
-    { name: "Electric Cyan",   hex: "#00D4FF" },
-    { name: "Gold",            hex: "#FFC21A" }
+    { name: "Orange", hex: "#FF6B00" },
+    { name: "Red",    hex: "#E5133A" },
+    { name: "Violet", hex: "#9B5CFF" },
+    { name: "Green",  hex: "#10C77B" },
+    { name: "Cyan",   hex: "#00D4FF" },
+    { name: "Gold",   hex: "#FFC21A" }
   ],
   links: [
     { label: "Twitter / X", url: "https://x.com/yourhandle" },
@@ -258,167 +358,192 @@ const CONFIG = {
 };
 
 const SERVERS_LIST = [
-  // members: set the real count. Total reach is the sum of every entry. Leave 0 to hide a count.
-  // icon: a name from ICONS below. invite: optional link, "" for none.
-  { name: "Forge: Tower Defense", icon: "tower", role: "Management", members: 0, invite: "" },
-  { name: "Bee Fruits",           icon: "hex",   role: "Owner",      members: 0, invite: "" }
+  { name: "Forge: Tower Defense", role: "Community Manager", members: 2500, invite: "" },
+  { name: "Bee Fruits", role: "Owner", members: 1200, invite: "" }
 ];
 
-const ICONS = {
-  shield:  '<path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>',
-  users:   '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M17 14c2.5 0 4 1.8 4 4.5"/>',
-  layout:  '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/>',
-  pulse:   '<path d="M3 12h4l3-7 4 14 3-7h4"/>',
-  chat:    '<path d="M4 5h16v11H9l-5 4z"/>',
-  compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
-  sliders: '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',
-  tower:   '<path d="M5 21V9l2-2V4h2v2h2V4h2v2h2V4h2v3l2 2v12z"/><path d="M10 21v-5h4v5"/>',
-  hex:     '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M8.5 12h7"/>'
-};
-
-const LOADER = { title: "Loading.", hint: "Click the targets while you wait." };
-
-/* ============================================================
-   Code below normally needs no changes.
-   ============================================================ */
+/* EDIT HERE: Add your news logs here easily whenever you want to post updates */
+const NEWS_LIST = [
+  {
+    date: "Recent Update",
+    title: "Expanded Management Capacity",
+    content: "Took on workflow restructuring for new community projects and cleaned up internal bot permissions."
+  },
+  {
+    date: "Milestone",
+    title: "Community Reach Reached",
+    content: "Combined managed community volume surpassed 3,700 active members securely."
+  }
+];
 
 const $ = id => document.getElementById(id);
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
-const svg = name => '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[name] || ICONS.hex) + '</svg>';
 
-document.querySelectorAll("[data-icon]").forEach(n => { n.innerHTML = svg(n.dataset.icon); n.setAttribute("aria-hidden", "true"); });
-
-/* ---------- Profile ---------- */
 $("name").textContent = CONFIG.displayName;
 $("handle").textContent = CONFIG.handle;
 $("intro").textContent = CONFIG.intro;
 $("avatarFallback").textContent = (CONFIG.displayName[0] || "A").toUpperCase();
 $("dmBtn").href = "https://discord.com/users/" + CONFIG.discordId;
+
 function setAvatar(url) {
   const img = $("avatar");
-  img.onload = () => { img.hidden = false; $("avatarFallback").hidden = true; };
+  img.onload = () => { 
+    img.hidden = false; 
+    $("avatarFallbackstyle" in img ? "" : "avatarFallback").style.display = "none";
+    $("avatarFallback").style.display = "none";
+  };
   img.src = url;
 }
-if (CONFIG.fallbackAvatar) setAvatar(CONFIG.fallbackAvatar);
 
-/* ---------- Communities + total reach ---------- */
 function renderServers() {
   const root = $("servers"); root.replaceChildren();
-  if (!SERVERS_LIST.length) { root.append(el("p", "empty", "No communities listed.")); $("reach").hidden = true; return; }
-  let total = 0;
+  let totalMembers = 0;
+  $("statServerCount").textContent = SERVERS_LIST.length;
+
   SERVERS_LIST.forEach(s => {
+    if(s.members) totalMembers += s.members;
     const card = el(s.invite ? "a" : "div", "glass card server");
     if (s.invite) { card.href = s.invite; card.target = "_blank"; card.rel = "noopener"; }
-    const icon = el("div", "icon"); icon.innerHTML = svg(s.icon); icon.setAttribute("aria-hidden", "true");
-    const meta = el("div"); meta.append(el("h3", "", s.name), el("small", "", s.role));
-    card.append(icon, meta);
-    if (s.members > 0) {
-      total += s.members;
-      const n = el("div", "n", s.members.toLocaleString("en-US")); n.append(el("small", "", "members"));
-      card.append(n);
-    }
+    
+    const iconBox = el("div", "icon-svg");
+    iconBox.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`;
+
+    const meta = el("div", "meta");
+    meta.append(el("h3", "", s.name), el("small", "", s.role + (s.members ? ` • ${s.members.toLocaleString()} members` : "")));
+    card.append(iconBox, meta);
     root.append(card);
   });
-  const reach = $("reach");
-  if (total > 0) {
-    reach.replaceChildren(document.createTextNode("Total reach: "), el("b", "", total.toLocaleString("en-US")), document.createTextNode(" members across " + SERVERS_LIST.length + " communit" + (SERVERS_LIST.length === 1 ? "y." : "ies.")));
-    reach.hidden = false;
-  } else reach.hidden = true;
+
+  $("statMemberReach").textContent = totalMembers > 0 ? totalMembers.toLocaleString() + "+" : "0+";
 }
-renderServers();
 
-/* ---------- Links ---------- */
-CONFIG.links.forEach(l => { const a = el("a", "", l.label); a.href = l.url; a.target = "_blank"; a.rel = "noopener noreferrer"; $("pills").append(a); });
+function renderNews() {
+  const root = $("newsGrid"); root.replaceChildren();
+  if(!NEWS_LIST.length) {
+    root.append(el("p", "card glass", "No updates posted yet."));
+    return;
+  }
+  NEWS_LIST.forEach(n => {
+    const card = el("article", "glass card");
+    const dateSpan = el("span", "news-date", n.date);
+    const titleH3 = el("h3", "", n.title);
+    const descP = el("p", "", n.content);
+    card.append(dateSpan, titleH3, descP);
+    root.append(card);
+  });
+}
 
-/* ---------- Accent color (floating swatch only) ---------- */
+function renderLinks() {
+  const root = $("pills"); root.replaceChildren();
+  CONFIG.links.forEach(l => {
+    const a = el("a", "", l.label); a.href = l.url; a.target = "_blank"; a.rel = "noopener noreferrer"; root.append(a);
+  });
+}
+
+renderServers(); renderNews(); renderLinks();
+
+/* Tab Switcher */
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    $(btn.dataset.target).classList.add("active");
+  });
+});
+
 let colorIndex = 0;
-function applyColor(i, announce) {
-  const c = CONFIG.palette[i];
-  document.documentElement.style.setProperty("--accent", c.hex);
-  $("cycler").title = c.name + ". Click to change.";
-  $("cycler").setAttribute("aria-label", "Accent color: " + c.name + ". Click to change.");
+function applyColor(i) {
+  document.documentElement.style.setProperty("--accent", CONFIG.palette[i].hex);
   try { localStorage.setItem("accentIndex", i); } catch (e) {}
-  if (announce) toast(c.name);
 }
-try { const s = parseInt(localStorage.getItem("accentIndex"), 10); if (s >= 0 && s < CONFIG.palette.length) colorIndex = s; } catch (e) {}
-applyColor(colorIndex, false);
-$("cycler").addEventListener("click", () => { colorIndex = (colorIndex + 1) % CONFIG.palette.length; applyColor(colorIndex, true); });
+function nextColor() { colorIndex = (colorIndex + 1) % CONFIG.palette.length; applyColor(colorIndex); }
+try { const saved = parseInt(localStorage.getItem("accentIndex"), 10); if (saved >= 0 && saved < CONFIG.palette.length) colorIndex = saved; } catch (e) {}
+applyColor(colorIndex);
 
-/* ---------- Toast + copy ---------- */
+$("cycler").addEventListener("click", nextColor);
+
 let toastTimer;
 function toast(msg) {
   const t = $("toast"); t.textContent = msg; t.classList.add("show");
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 2000);
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
 }
 $("copyBtn").addEventListener("click", async () => {
-  const msg = "Copied " + CONFIG.discordTag;
-  try { await navigator.clipboard.writeText(CONFIG.discordTag); toast(msg); }
-  catch (e) {
-    const ta = el("textarea"); ta.value = CONFIG.discordTag; document.body.append(ta); ta.select();
-    try { document.execCommand("copy"); toast(msg); } catch (err) { toast("Couldn't copy. Tag: " + CONFIG.discordTag); }
-    ta.remove();
-  }
+  try { await navigator.clipboard.writeText(CONFIG.discordTag); toast("Copied @" + CONFIG.discordTag); } 
+  catch (e) { toast("Tag: @" + CONFIG.discordTag); }
 });
 
-/* ---------- Live status (Lanyard) ---------- */
-const STATUS = { online: "Online", idle: "Idle", dnd: "Do not disturb", offline: "Offline" };
+const STATUS_LABEL = { online: "Online", idle: "Idle", dnd: "Do Not Disturb", offline: "Offline" };
 function renderStatus(d) {
   const s = d.discord_status || "offline";
-  $("dot").dataset.s = s; $("dot").setAttribute("aria-label", "Status: " + STATUS[s]);
+  const dot = $("dot"); dot.dataset.s = s;
+
   const u = d.discord_user;
   if (u && u.avatar) setAvatar("https://cdn.discordapp.com/avatars/" + u.id + "/" + u.avatar + ".png?size=256");
+
   const acts = d.activities || [];
-  const custom = acts.find(a => a.type === 4 && a.state);
+  const custom = acts.find(a => a.type === 4);
   const other = acts.find(a => a.type !== 4);
   const box = $("activity"); box.replaceChildren();
-  if (custom) box.textContent = (custom.emoji && custom.emoji.name ? custom.emoji.name + " " : "") + custom.state;
-  else if (other) box.append(document.createTextNode(other.type === 2 ? "Listening to " : other.type === 3 ? "Watching " : "Playing "), el("b", "", other.name));
-  else box.textContent = STATUS[s];
+  
+  let line = STATUS_LABEL[s];
+  if (custom && custom.state) line = custom.state;
+  
+  if (other && !(custom && custom.state)) {
+    box.append(document.createTextNode(other.type === 2 ? "Listening to " : "Playing "), el("b", "", other.name));
+  } else {
+    box.textContent = line;
+  }
 }
+
 async function loadStatus() {
   try {
-    const j = await (await fetch("https://api.lanyard.rest/v1/users/" + CONFIG.discordId)).json();
+    const r = await fetch("https://api.lanyard.rest/v1/users/" + CONFIG.discordId);
+    const j = await r.json();
     if (j.success) renderStatus(j.data);
-    else $("activity").textContent = "Status unavailable. Join the Lanyard Discord server to turn it on.";
-  } catch (e) { $("activity").textContent = "Status unavailable."; }
+  } catch (e) {}
 }
 loadStatus();
 setInterval(loadStatus, CONFIG.refreshSeconds * 1000);
 
-/* ---------- Loading mini-game ---------- */
-(function () {
-  const loader = $("loader"), field = $("field");
-  $("loadTitle").textContent = LOADER.title; $("loadHint").textContent = LOADER.hint;
-  let score = 0, done = false, start = performance.now();
-  const total = CONFIG.loaderSeconds * 1000;
+/* Improved Arcade Minigame Loader */
+let score = 0, timeLeft = 10;
+const target = $("arcadeTarget"), loader = $("loader"), scoreEl = $("arcadeScore"), timerEl = $("arcadeTimer");
 
-  function spawn() {
-    if (done) return;
-    const b = el("button", "target"); b.type = "button"; b.setAttribute("aria-label", "Target");
-    b.style.left = Math.random() * (field.clientWidth - 38) + "px";
-    b.style.top = Math.random() * (field.clientHeight - 38) + "px";
-    b.addEventListener("click", () => { score++; $("score").textContent = score; b.remove(); });
-    field.append(b);
-    setTimeout(() => b.remove(), 1300);
-  }
-  const spawnTimer = setInterval(spawn, 650);
-  const tick = setInterval(() => {
-    const p = Math.min((performance.now() - start) / total, 1);
-    $("barFill").style.width = (p * 100) + "%";
-    if (p >= 1) finish();
-  }, 50);
+function moveTarget() {
+  const box = $("arcadeBox");
+  const maxX = box.clientWidth - 36;
+  const maxY = box.clientHeight - 36;
+  target.style.left = Math.max(8, Math.floor(Math.random() * maxX)) + "px";
+  target.style.top = Math.max(8, Math.floor(Math.random() * maxY)) + "px";
+}
 
-  function finish() {
-    if (done) return; done = true;
-    clearInterval(spawnTimer); clearInterval(tick);
-    loader.classList.add("out"); document.body.classList.remove("locked");
-    setTimeout(() => loader.remove(), 450);
+target.addEventListener("click", (e) => {
+  e.stopPropagation();
+  score++;
+  scoreEl.textContent = score;
+  if (score >= 5) {
+    clearInterval(gameInterval);
+    loader.classList.add("hidden");
+  } else {
+    moveTarget();
   }
-  $("skip").addEventListener("click", finish);
-  document.addEventListener("keydown", e => { if (e.key === "Escape") finish(); });
-  $("skip").focus();
-  spawn();
-})();
+});
+
+moveTarget();
+const gameInterval = setInterval(() => {
+  timeLeft--;
+  timerEl.textContent = timeLeft;
+  if (timeLeft <= 0) {
+    clearInterval(gameInterval);
+    loader.classList.add("hidden");
+  }
+}, 1000);
+
+$("skipBtn").addEventListener("click", () => {
+  clearInterval(gameInterval);
+  loader.classList.add("hidden");
+});
 </script>
 </body>
 </html>
